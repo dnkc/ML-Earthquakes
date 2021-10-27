@@ -15,7 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url
+import django.contrib.auth.views
+import quakesapp.views
+from quakesapp.views import quake_dataset
 
 urlpatterns = [
+    url(r'^$', quakesapp.views.home, name="home"),
+    url(r'^quake_dataset/', quake_dataset, name="quakedataset"),
     path('admin/', admin.site.urls),
+
 ]

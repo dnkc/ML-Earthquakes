@@ -1,0 +1,90 @@
+{% extends "app/layout.html" %} {% block content %} {% load static %}
+<!-- import Leaflet CSS -->
+<link rel="stylesheet" href="{% static 'app/leaflet/leaflet.css' %}" />
+
+<style>
+  #map {
+    height: calc(100vh - 80px) !important;
+  }
+  /*Legend specific*/
+  .legend {
+    padding: 6px 8px;
+    font: 14px Arial, Helvetica, sans-serif;
+    background: #000000;
+    background: rgba(0, 0, 0, 0.8);
+    /*box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);*/
+    /*border-radius: 5px;*/
+    line-height: 24px;
+    color: #fff;
+  }
+  .legend h4 {
+    text-align: center;
+    font-size: 16px;
+    margin: 2px 12px 8px;
+    color: #fff;
+  }
+
+  .legend span {
+    position: relative;
+    bottom: 3px;
+  }
+
+  .legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin: 0 8px 0 0;
+    opacity: 0.7;
+  }
+
+  .legend i.icon {
+    background-size: 18px;
+    background-color: rgb(255, 255, 255);
+  }
+</style>
+
+<div id="map"></div>
+<script src="{% static 'app/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'app/leaflet/leaflet.js' %}"></script>
+
+<script type="text/javascript">
+  // Url Endpoints
+  var dataUrl = '{% url "quakedataset" %}';
+
+  // Basemap urls
+  var osm_map = L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }
+  );
+
+  // Initialize map
+  var map = L.map("map", {
+    layers: [osm_map], //Default basemap
+  }).setView([8.7832, 34.5085], 3);
+
+  // Get marker layers
+  $.getJSON(dataUrl, function (data) {
+    $.each(data, function (i, item) {
+      //console.log(item);
+      var marker = L.marker(
+        L.latLng(item.fields.Latitude, item.fields.Longitude)
+      );
+      marker
+        .bindPopup(
+          "<h4>Magnitude: " + item.fields.Magnitude.toString() + "</h4>"
+        )
+        .addTo(map);
+      marker.on("mouseover", function (e) {
+        this.openPopup();
+      });
+      marker.on("mouseout", function (e) {
+        this.closePopup();
+      });
+      //marker_layers.addLayer(marker);
+    });
+  });
+</script>
+{% endblock %}
