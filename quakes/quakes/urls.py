@@ -18,11 +18,13 @@ from django.urls import path
 from django.conf.urls import url
 import django.contrib.auth.views
 import quakesapp.views
-from quakesapp.views import quake_dataset
+from quakesapp.views import quake_dataset, quake_dataset_pred, quake_dataset_pred_risk
 
 urlpatterns = [
     url(r'^$', quakesapp.views.home, name="home"),
     url(r'^quake_dataset/', quake_dataset, name="quakedataset"),
+    url(r'^quake_dataset_pred/', quake_dataset_pred, name="quakedatasetpred"),
+    url(r'^quake_dataset_pred_risk/', quake_dataset_pred_risk, name='quakedatasetpredrisk'),
     path('admin/', admin.site.urls),
 
 ]
